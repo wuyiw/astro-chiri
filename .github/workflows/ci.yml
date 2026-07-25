@@ -68,6 +68,13 @@ jobs:
           path: dist/
           retention-days: 7
 
+      - name: Deploy to 1Panel
+        env:
+          ONEPANEL_BASE_URL: ${{ secrets.ONEPANEL_BASE_URL }}
+          ONEPANEL_API_KEY: ${{ secrets.ONEPANEL_API_KEY }}
+        run: |
+          node ./bin/1panel/index.mjs -p ./dist -d astro.wuyiw.top
+
   auto-merge:
     name: Auto Merge
     runs-on: ubuntu-latest
