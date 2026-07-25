@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  micromark-extension-directive@4.0.0: 5b651edd6a0469f207451aedb39245273eb6a3ad5c72330ffec4138248f3443e
+
 importers:
 
   .:
@@ -50,9 +53,15 @@ importers:
       markdown-it:
         specifier: ^14.3.0
         version: 14.3.0
+      mdast-util-directive:
+        specifier: ^3.1.0
+        version: 3.1.0
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
+      micromark-extension-directive:
+        specifier: 4.0.0
+        version: 4.0.0(patch_hash=5b651edd6a0469f207451aedb39245273eb6a3ad5c72330ffec4138248f3443e)
       node-html-parser:
         specifier: ^9.0.0
         version: 9.0.0
@@ -71,6 +80,9 @@ importers:
       remark-math:
         specifier: ^6.0.0
         version: 6.0.0
+      remark-parse:
+        specifier: ^11.0.0
+        version: 11.0.0
       sanitize-html:
         specifier: ^2.17.6
         version: 2.17.6
@@ -5297,7 +5309,7 @@ snapshots:
       micromark-util-symbol: 2.0.0
       micromark-util-types: 2.0.0
 
-  micromark-extension-directive@4.0.0:
+  micromark-extension-directive@4.0.0(patch_hash=5b651edd6a0469f207451aedb39245273eb6a3ad5c72330ffec4138248f3443e):
     dependencies:
       devlop: 1.1.0
       micromark-factory-space: 2.0.0
@@ -5825,7 +5837,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
       mdast-util-directive: 3.1.0
-      micromark-extension-directive: 4.0.0
+      micromark-extension-directive: 4.0.0(patch_hash=5b651edd6a0469f207451aedb39245273eb6a3ad5c72330ffec4138248f3443e)
       unified: 11.0.0
     transitivePeerDependencies:
       - supports-color

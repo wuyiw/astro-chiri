@@ -1,0 +1,13 @@
+diff --git a/lib/factory-attributes.js b/lib/factory-attributes.js
+index 098baea5d885580402874715ecceef9d87a1183e..64088c9a697a8aad7319ef6e4d700b621a41796a 100644
+--- a/lib/factory-attributes.js
++++ b/lib/factory-attributes.js
+@@ -107,7 +107,7 @@ export function factoryAttributes(effects, ok, nok, attributesType, attributesMa
+ 
+   /** @type {State} */
+   function name(code) {
+-    if (code === null || markdownLineEnding(code) || unicodeWhitespace(code) || unicodePunctuation(code) && code !== 45 && code !== 46 && code !== 58 && code !== 95) {
++    if (code === null || code === 61 || markdownLineEnding(code) || unicodeWhitespace(code) || unicodePunctuation(code) && code !== 45 && code !== 46 && code !== 58 && code !== 95) {
+       effects.exit(attributeNameType);
+       if (disallowEol && markdownSpace(code)) {
+         return factorySpace(effects, nameAfter, "whitespace")(code);

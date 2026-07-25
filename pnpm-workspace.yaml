@@ -2,3 +2,5 @@ allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
   - eslint@10.8.0
+patchedDependencies:
+  micromark-extension-directive@4.0.0: patches/micromark-extension-directive@4.0.0.patch
