@@ -7,15 +7,16 @@ const today = new Date()
   <div class="footer-content">
     <div class="copyright">
       <span class="date">
-        &copy;
+        &copy;&nbsp;
         {today.getFullYear()}
-      </span>
+      </span>&nbsp;
       {themeConfig.site.author}
     </div>
     <div class="powered-by">
-      Powered by{' '}
+      基于{' '}
       <a href="https://astro.build">Astro</a> +{' '}
-      <a href="https://github.com/the3ash/astro-chiri">Chiri</a>
+      <a href="https://github.com/the3ash/astro-chiri">Chiri</a>{'丨'}
+      <a href="https://beian.miit.gov.cn/">粤ICP备18125622号</a>
     </div>
   </div>
 </footer>
@@ -41,6 +42,7 @@ const today = new Date()
   .copyright,
   .powered-by {
     white-space: nowrap;
+    padding-left: 0.5rem;
   }
 
   .copyright .date {

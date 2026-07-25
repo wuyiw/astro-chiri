@@ -3,11 +3,11 @@ import type { ThemeConfig } from './types'
 export const themeConfig: ThemeConfig = {
   // SITE INFO ///////////////////////////////////////////////////////////////////////////////////////////
   site: {
-    website: 'https://chiri.the3ash.com/', // Site domain
-    title: 'CHIRI', // Site title
-    author: '3ASH', // Author name
+    website: 'https://wuyiw.top/', // Site domain
+    title: '51的日记本', // Site title
+    author: 'wuyiw', // Author name
     description: 'Minimal blog built by Astro', // Site description
-    language: 'en-US' // Default language
+    language: 'zh-CN' // Default language
   },
 
   // GENERAL SETTINGS ////////////////////////////////////////////////////////////////////////////////////
