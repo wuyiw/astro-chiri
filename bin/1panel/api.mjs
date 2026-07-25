@@ -1,8 +1,8 @@
-import crypto from "node:crypto";
-import path from "node:path";
-import axios from "axios";
-import FormData from "form-data";
-import fs from "fs-extra";
+import crypto from 'node:crypto'
+import path from 'node:path'
+import axios from 'axios'
+import FormData from 'form-data'
+import fs from 'fs-extra'
 
 /**
  * OnePanelAPI - API client for interacting with 1Panel server
@@ -18,20 +18,20 @@ class OnePanelAPI {
    */
   constructor({ baseURL, apiKey, languageCode }) {
     this.apiClient = axios.create({
-      baseURL: `${baseURL}/api/v1`,
-    });
+      baseURL: `${baseURL}/api/v1`
+    })
     this.apiClient.interceptors.request.use((config) => {
-      const timestamp = Math.floor(Date.now() / 1000).toString();
+      const timestamp = Math.floor(Date.now() / 1000).toString()
 
-      const content = `1panel${apiKey}${timestamp}`;
-      const token = crypto.createHash("md5").update(content).digest("hex");
+      const content = `1panel${apiKey}${timestamp}`
+      const token = crypto.createHash('md5').update(content).digest('hex')
 
-      config.headers["1Panel-Token"] = token;
-      config.headers["1Panel-Timestamp"] = timestamp;
-      config.headers["Accept-Language"] = languageCode || "en";
-      return config;
-    });
-    this.ignoreFiles = ["node_modules/", ".git/", ".vscode/", ".env", ".env.local"];
+      config.headers['1Panel-Token'] = token
+      config.headers['1Panel-Timestamp'] = timestamp
+      config.headers['Accept-Language'] = languageCode || 'en'
+      return config
+    })
+    this.ignoreFiles = ['node_modules/', '.git/', '.vscode/', '.env', '.env.local']
   }
 
   /**
@@ -44,44 +44,44 @@ class OnePanelAPI {
     try {
       const requestBody = {
         primaryDomain: siteConfig.domain,
-        type: "static",
+        type: 'static',
         alias: siteConfig.domain,
-        remark: "",
-        appType: "installed",
+        remark: '',
+        appType: 'installed',
         webSiteGroupId: 2,
-        otherDomains: "",
-        proxy: "",
+        otherDomains: '',
+        proxy: '',
         appinstall: {
           appId: 0,
-          name: "",
+          name: '',
           appDetailId: 0,
           params: {},
-          version: "",
-          appkey: "",
+          version: '',
+          appkey: '',
           advanced: false,
           cpuQuota: 0,
           memoryLimit: 0,
-          memoryUnit: "MB",
-          containerName: "",
-          allowPort: false,
+          memoryUnit: 'MB',
+          containerName: '',
+          allowPort: false
         },
         IPV6: false,
         enableFtp: false,
-        ftpUser: "",
-        ftpPassword: "",
-        proxyType: "tcp",
+        ftpUser: '',
+        ftpPassword: '',
+        proxyType: 'tcp',
         port: 9000,
-        proxyProtocol: "http://",
-        proxyAddress: "",
-        runtimeType: "php",
-      };
+        proxyProtocol: 'http://',
+        proxyAddress: '',
+        runtimeType: 'php'
+      }
 
-      await this.apiClient.post("/websites", requestBody);
+      await this.apiClient.post('/websites', requestBody)
 
-      const website = await this.getWebsiteDetail(siteConfig.domain);
-      return website;
+      const website = await this.getWebsiteDetail(siteConfig.domain)
+      return website
     } catch (error) {
-      throw new Error(`Create website failed: ${error.message}`);
+      throw new Error(`Create website failed: ${error.message}`)
     }
   }
 
@@ -91,18 +91,18 @@ class OnePanelAPI {
    */
   async getWebsiteList() {
     try {
-      const { data } = await this.apiClient.post("/websites/search", {
-        name: "",
+      const { data } = await this.apiClient.post('/websites/search', {
+        name: '',
         page: 1,
         pageSize: 999999,
-        orderBy: "created_at",
-        order: "null",
-        websiteGroupId: 0,
-      });
+        orderBy: 'created_at',
+        order: 'null',
+        websiteGroupId: 0
+      })
 
-      return data.data.items;
+      return data.data.items
     } catch (error) {
-      throw new Error(`Get website list failed: ${error.message}`);
+      throw new Error(`Get website list failed: ${error.message}`)
     }
   }
 
@@ -113,13 +113,13 @@ class OnePanelAPI {
    */
   async getWebsiteDetail(domain) {
     try {
-      const websites = await this.getWebsiteList();
+      const websites = await this.getWebsiteList()
 
-      const website = websites.find((w) => w.primaryDomain === domain);
+      const website = websites.find((w) => w.primaryDomain === domain)
 
-      return website;
+      return website
     } catch (error) {
-      throw new Error(`Get website detail failed: ${error.message}`);
+      throw new Error(`Get website detail failed: ${error.message}`)
     }
   }
 
@@ -131,20 +131,20 @@ class OnePanelAPI {
    */
   async uploadSingleFile(filePath, targetDir) {
     try {
-      const formData = new FormData();
-      targetDir = targetDir.replace(/\\/g, "/");
+      const formData = new FormData()
+      targetDir = targetDir.replace(/\\/g, '/')
 
-      formData.append("file", fs.createReadStream(filePath));
-      formData.append("path", targetDir);
-      formData.append("overwrite", "true");
+      formData.append('file', fs.createReadStream(filePath))
+      formData.append('path', targetDir)
+      formData.append('overwrite', 'true')
 
-      const response = await this.apiClient.post("/files/upload", formData, {
-        headers: formData.getHeaders(),
-      });
+      const response = await this.apiClient.post('/files/upload', formData, {
+        headers: formData.getHeaders()
+      })
 
-      return response.data.data || { message: "Upload success" };
+      return response.data.data || { message: 'Upload success' }
     } catch (error) {
-      throw new Error(`Upload file failed: ${filePath} - ${error.message}`);
+      throw new Error(`Upload file failed: ${filePath} - ${error.message}`)
     }
   }
 
@@ -157,22 +157,22 @@ class OnePanelAPI {
    * @returns {Promise<Object>} - Upload result
    */
   async uploadSingleFileWithRetry(filePath, targetDir, retryCount = 3, retryDelay = 1000) {
-    let lastError;
+    let lastError
 
     for (let attempt = 1; attempt <= retryCount; attempt++) {
       try {
-        return await this.uploadSingleFile(filePath, targetDir);
+        return await this.uploadSingleFile(filePath, targetDir)
       } catch (error) {
-        lastError = error;
-        console.warn(`Upload attempt ${attempt}/${retryCount} failed for ${filePath}: ${error.message}`);
+        lastError = error
+        console.warn(`Upload attempt ${attempt}/${retryCount} failed for ${filePath}: ${error.message}`)
         if (attempt < retryCount) {
-          console.log(`Retrying in ${retryDelay}ms...`);
-          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+          console.log(`Retrying in ${retryDelay}ms...`)
+          await new Promise((resolve) => setTimeout(resolve, retryDelay))
         }
       }
     }
 
-    throw lastError;
+    throw lastError
   }
 
   /**
@@ -182,8 +182,8 @@ class OnePanelAPI {
    */
   shouldIgnore(filePath) {
     return this.ignoreFiles.some((pattern) => {
-      return filePath.includes(pattern) || path.basename(filePath) === pattern;
-    });
+      return filePath.includes(pattern) || path.basename(filePath) === pattern
+    })
   }
 
   /**
@@ -194,56 +194,56 @@ class OnePanelAPI {
    * @returns {Promise<Array>} - Upload results
    */
   async uploadDirectory(sourceDir, targetDir, basePath) {
-    const normalizedTargetDir = targetDir.endsWith("/") ? targetDir : `${targetDir}/`;
-    const normalizedBasePath = basePath || sourceDir;
+    const normalizedTargetDir = targetDir.endsWith('/') ? targetDir : `${targetDir}/`
+    const normalizedBasePath = basePath || sourceDir
 
-    const results = [];
-    const files = await fs.readdir(sourceDir);
+    const results = []
+    const files = await fs.readdir(sourceDir)
 
-    console.log(`Uploading directory: ${sourceDir}, ${files.length} files/directories`);
+    console.log(`Uploading directory: ${sourceDir}, ${files.length} files/directories`)
 
     for (const file of files) {
-      const sourcePath = path.join(sourceDir, file);
+      const sourcePath = path.join(sourceDir, file)
 
       if (this.shouldIgnore(sourcePath)) {
-        console.log(`Ignoring: ${sourcePath}`);
-        continue;
+        console.log(`Ignoring: ${sourcePath}`)
+        continue
       }
 
-      const stats = await fs.stat(sourcePath);
-      const relativePath = path.relative(normalizedBasePath, sourceDir);
+      const stats = await fs.stat(sourcePath)
+      const relativePath = path.relative(normalizedBasePath, sourceDir)
       const currentTargetDir = relativePath
-        ? path.join(normalizedTargetDir, relativePath).replace(/\\/g, "/")
-        : normalizedTargetDir;
+        ? path.join(normalizedTargetDir, relativePath).replace(/\\/g, '/')
+        : normalizedTargetDir
 
       if (stats.isDirectory()) {
-        console.log(`Found subdirectory: ${file}, uploading recursively...`);
-        const subSourceDir = path.join(sourceDir, file);
-        const subResults = await this.uploadDirectory(subSourceDir, normalizedTargetDir, normalizedBasePath);
-        results.push(...subResults);
+        console.log(`Found subdirectory: ${file}, uploading recursively...`)
+        const subSourceDir = path.join(sourceDir, file)
+        const subResults = await this.uploadDirectory(subSourceDir, normalizedTargetDir, normalizedBasePath)
+        results.push(...subResults)
       } else {
-        console.log(`Upload file: ${file}`);
+        console.log(`Upload file: ${file}`)
         try {
-          const result = await this.uploadSingleFileWithRetry(sourcePath, currentTargetDir);
+          const result = await this.uploadSingleFileWithRetry(sourcePath, currentTargetDir)
           results.push({
             file,
             targetPath: currentTargetDir,
             result,
-            success: true,
-          });
+            success: true
+          })
         } catch (error) {
-          console.error(`Upload file ${file} failed after retries:`, error.message);
+          console.error(`Upload file ${file} failed after retries:`, error.message)
           results.push({
             file,
             targetPath: currentTargetDir,
             error: error.message,
-            success: false,
-          });
+            success: false
+          })
         }
       }
     }
 
-    return results;
+    return results
   }
 
   /**
@@ -254,38 +254,38 @@ class OnePanelAPI {
    */
   async uploadStaticFiles(domain, sourceDirPath) {
     try {
-      const siteDetail = await this.getWebsiteDetail(domain);
+      const siteDetail = await this.getWebsiteDetail(domain)
 
       if (!siteDetail.sitePath) {
-        throw new Error("Cannot get website physical path");
+        throw new Error('Cannot get website physical path')
       }
 
-      const sitePath = siteDetail.sitePath;
-      console.log(`Website root path: ${sitePath}`);
+      const sitePath = siteDetail.sitePath
+      console.log(`Website root path: ${sitePath}`)
 
       if (!fs.existsSync(sourceDirPath)) {
-        throw new Error(`Source directory does not exist: ${sourceDirPath}`);
+        throw new Error(`Source directory does not exist: ${sourceDirPath}`)
       }
 
-      const targetPath = path.join(sitePath, "index");
+      const targetPath = path.join(sitePath, 'index')
 
-      const results = await this.uploadDirectory(sourceDirPath, targetPath, sourceDirPath);
+      const results = await this.uploadDirectory(sourceDirPath, targetPath, sourceDirPath)
 
-      const successCount = results.filter((r) => r.success).length;
-      const failCount = results.filter((r) => !r.success).length;
+      const successCount = results.filter((r) => r.success).length
+      const failCount = results.filter((r) => !r.success).length
 
-      console.log(`Upload completed: ${results.length} files, ${successCount} success, ${failCount} failed`);
+      console.log(`Upload completed: ${results.length} files, ${successCount} success, ${failCount} failed`)
 
       return {
         totalFiles: results.length,
         successCount,
         failCount,
-        details: results,
-      };
+        details: results
+      }
     } catch (error) {
-      throw new Error(`Upload files failed: ${error.message}`);
+      throw new Error(`Upload files failed: ${error.message}`)
     }
   }
 }
 
-export default OnePanelAPI;
+export default OnePanelAPI
